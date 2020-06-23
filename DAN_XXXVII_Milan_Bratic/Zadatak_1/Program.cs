@@ -13,6 +13,7 @@ namespace Zadatak_1
         static string path = "../../Routes.txt";
         static Random rnd = new Random();
         static object locker = new object();
+        static int[] bestRoutes = new int[10];
         static void Routes()
         {
             lock (locker)
@@ -34,10 +35,41 @@ namespace Zadatak_1
 
         }
 
-       
+        static void Manager()
+        {
+            lock (locker)
+            {
+                Monitor.Wait(locker);
+
+                List<int> allRoutes = new List<int>();
+                List<int> routesDivisibleByThree = new List<int>();
+                string[] lines = File.ReadAllLines(path);
+                foreach (var item in lines)
+                {
+                    allRoutes.Add(int.Parse(item));
+                }
+
+                for (int i = 0; i < allRoutes.Count; i++)
+                {
+                    if (allRoutes[i] % 3 == 0)
+                    {
+                        routesDivisibleByThree.Add(allRoutes[i]);
+                    }
+                }
+                routesDivisibleByThree.Sort();
+                for (int i = 0; i < bestRoutes.Length; i++)
+                {
+                    bestRoutes[i] = routesDivisibleByThree[i];
+                }
+                
+            }
+        }
         static void Main(string[] args)
         {
-
+            Thread thread1 = new Thread(Routes);
+            Thread thread2 = new Thread(Manager);
+            thread1.Start();
+            thread2.Start();
         }
     }
 }
