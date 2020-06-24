@@ -108,7 +108,7 @@ namespace Zadatak_1
         /// <param name="time">delivery time</param>
         /// <param name="route">route</param>
         /// <param name="loadingTime">loading time</param>
-        static void TruckUnloading(int truckName, int time, int route, int loadingTime)
+        static void TruckUnloading(string truckName, int time, int route, int loadingTime)
         {
             Console.WriteLine("The truck Truck_{0} is on its way to route {1}, delivery can be expected for {2}", truckName, route, time);
             if (time > 3000)
@@ -137,7 +137,7 @@ namespace Zadatak_1
             for (int i = 0; i < 5; i++)
             {
                 int time1 = rnd.Next(500, 5000);
-                //since we have five iterations, in this way we ensure that ten threads enter the method
+                //since we have five iterations, in this way we ensure that ten threads enterthe method
                 loadingTimes[2 * i] = time1;
                 int time2 = rnd.Next(500, 5000);
                 loadingTimes[2 * i + 1] = time2;
@@ -152,9 +152,11 @@ namespace Zadatak_1
             for (int i = 0; i < 10; i++)
             {
                 int time = rnd.Next(500, 5000);
-                Thread t = new Thread(() => TruckUnloading(i + 1, time, bestRoutes[i], loadingTimes[i]));
+                int time2 = loadingTimes[i];
+                int route = bestRoutes[i];
+                Thread t = new Thread(() => TruckUnloading(Thread.CurrentThread.Name, time, route, time2));
+                t.Name = "" + (i+1);
                 t.Start();
-                t.Join();
             }
             Console.ReadLine();
         }
